@@ -1,0 +1,13 @@
+body {
+  background-color: whitesmoke;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.container form {
+  width: 60%;
+}
