@@ -4,5 +4,8 @@
 {% endblock %}
 
 {% block content %}
-  <h2>Hola Selene</h2>
+  <h2>Hola</h2>
+
+  {% from '_macro.html' import show_list %}
+  {{ show_list('Selene') }}
 {% endblock %}
