@@ -6,12 +6,12 @@
 {% block content %}
   {% from '_macroForm.html' import show_form %}
   <div class="container">
-    <form class="m-5">
+    <form class="m-5" method="POST">
       {{ show_form(form.username, class='form-control') }}
       {{ show_form(form.email, class='form-control') }}
       {{ show_form(form.comment, class='form-control') }}
       <br />
-      <button class="btn btn-primary form-control">Send</button>
+      <button class="btn btn-primary form-control" type="submit">Send</button>
     </form>
   </div>
 {% endblock %}
