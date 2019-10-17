@@ -6,7 +6,7 @@ app = Flask(__name__)
 def index():
     comment_form = formulario.CommentForm(request.form)
     print('hola')
-    if request.method == 'POST':
+    if request.method == 'POST' and comment_form.validate():
         print('username: ', comment_form.username.data)
         print('email: ', comment_form.email.data)
         print('comment: ', comment_form.comment.data)
@@ -14,4 +14,4 @@ def index():
     return render_template('form.html', form=comment_form)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5000)
