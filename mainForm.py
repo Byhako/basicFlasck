@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request
+from flask_wtf import CsrfProtect
 import formulario
 
 app = Flask(__name__)
+app.secret_key = 'mi_palabra_secreta'
+csrf = CsrfProtect(app)
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     comment_form = formulario.CommentForm(request.form)

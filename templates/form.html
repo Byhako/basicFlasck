@@ -7,6 +7,8 @@
   {% from '_macroForm.html' import show_form %}
   <div class="container">
     <form class="m-5" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
       {{ show_form(form.username, class='form-control') }}
       {{ show_form(form.email, class='form-control') }}
       {{ show_form(form.comment, class='form-control') }}
