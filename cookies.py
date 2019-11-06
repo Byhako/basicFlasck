@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, session, redirect, url_for
 from flask_wtf import CsrfProtect
 import formulario
 
@@ -10,20 +10,30 @@ csrf = CsrfProtect(app)
 def index():
     custom_cookie = request.cookies.get('custom_cookie', 'No encontrado.')
     print(custom_cookie)
+    if 'username' in session:
+        username = session['username']
+        print(username)
+
     return render_template('index.html')
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     comment_form = formulario.CommentForm(request.form)
     if request.method == 'POST' and comment_form.validate():
-        print('username: ', comment_form.username.data)
-        print('email: ', comment_form.email.data)
-        print('comment: ', comment_form.comment.data)
+        # print('username: ', comment_form.username.data)
+        session['username'] = comment_form.username.data
     else:
         print('Error')
 
     return render_template('form.html', form=comment_form)
 
+@app.route('/logout')
+def logout():
+    if 'username' in session:
+        session.pop('username')
+    # pasamos el nombre de la funcion que esta asociada a la ruta donde
+    # queresmos redireccionar.
+    return redirect(url_for('login'))
 
 @app.route('/cookie')
 def cookie():
