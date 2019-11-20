@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, make_response, session, redirect, url_for, flash
+from flask import Flask, render_template, request, make_response, session, redirect, url_for, flash, g
 from flask_wtf import CsrfProtect
 import json
 import formulario
+# importamos "g" para usar variables globales
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
@@ -13,14 +14,15 @@ def page_no_found(e):
 
 # -----------------------------------------------------------------------
 @app.before_request
-def before_request(): 
+def before_request():
+    g.variable_global = 'Selene'
     if 'username' not in session and request.endpoint not in ['index']:
         return redirect(url_for('index'))
 
 @app.route('/')
 def index():
+    print('index', g.variable_global)
     custom_cookie = request.cookies.get('custom_cookie', 'No encontrado.')
-    print(custom_cookie)
     if 'username' in session:
         username = session['username']
         print(username)
@@ -29,7 +31,7 @@ def index():
 
 @app.after_request
 def after_request(response):
-    print('after')
+    print('after', g.variable_global)
     return response
 
 # -----------------------------------------------------------------------
