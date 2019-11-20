@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, make_response, session, redirect, url_for, flash
 from flask_wtf import CsrfProtect
+import json
 import formulario
 
 app = Flask(__name__)
@@ -47,6 +48,14 @@ def cookie():
     response = make_response( render_template('cookie.html') )
     response.set_cookie('custom_cookie', 'Selene')
     return response
+
+@app.route('/ajax-login', methods = ['POST'])
+def ajax_login():
+    print(request.form)
+    username = request.form['username']
+    # validacion
+    response = { 'status': 200, 'id': 1, 'username': username }
+    return json.dumps(response)
 
 
 if __name__ == "__main__":
