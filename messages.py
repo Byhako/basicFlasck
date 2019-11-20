@@ -11,6 +11,12 @@ csrf = CsrfProtect(app)
 def page_no_found(e):
     return render_template('404.html'), 404
 
+# -----------------------------------------------------------------------
+@app.before_request
+def before_request(): 
+    if 'username' not in session and request.endpoint not in ['index']:
+        return redirect(url_for('index'))
+
 @app.route('/')
 def index():
     custom_cookie = request.cookies.get('custom_cookie', 'No encontrado.')
@@ -20,6 +26,13 @@ def index():
         print(username)
 
     return render_template('index.html')
+
+@app.after_request
+def after_request(response):
+    print('after')
+    return response
+
+# -----------------------------------------------------------------------
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -59,4 +72,4 @@ def ajax_login():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)
