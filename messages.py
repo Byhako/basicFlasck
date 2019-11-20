@@ -4,9 +4,13 @@ import json
 import formulario
 # importamos "g" para usar variables globales
 
+from config import DevelopmentConfig
+
 app = Flask(__name__)
-app.secret_key = 'my_secret_key'
-csrf = CsrfProtect(app)
+app.config.from_object(DevelopmentConfig)
+# app.secret_key = 'my_secret_key'
+# csrf = CsrfProtect(app)
+csrf = CsrfProtect()
 
 @app.errorhandler(404)
 def page_no_found(e):
@@ -22,7 +26,7 @@ def before_request():
 @app.route('/')
 def index():
     print('index', g.variable_global)
-    custom_cookie = request.cookies.get('custom_cookie', 'No encontrado.')
+    # custom_cookie = request.cookies.get('custom_cookie', 'No encontrado.')
     if 'username' in session:
         username = session['username']
         print(username)
@@ -74,4 +78,6 @@ def ajax_login():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    csrf.init_app(app)
+    # app.run(debug=True, port=5000)
+    app.run(port=5000)
