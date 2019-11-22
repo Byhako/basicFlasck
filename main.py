@@ -87,6 +87,30 @@ def ajax_login():
     response = { 'status': 200, 'id': 1, 'email': email }
     return json.dumps(response)
 
+
+@app.route('/create', methods=['GET', 'POST'])
+def create():
+    create_form = formulario.CreateForm(request.form)
+    if request.method == 'POST' and create_form.validate():
+        print('username: ', create_form.username.data)
+        print('email: ', create_form.email.data)
+        print('password: ', create_form.password.data)
+
+        user = User(
+            username = create_form.username.data,
+            email = create_form.email.data,
+            password = create_form.password.data
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        success_message = 'Usuario {} creado con exito'.format(create_form.username.data)
+        flash(success_message)
+
+    return render_template('app/create.html', form=create_form)
+
+
 if __name__ == "__main__":
     csrf.init_app(app)
     db.init_app(app)
