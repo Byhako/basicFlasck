@@ -7,10 +7,32 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styleForm.css') }}">
-
   <title> {% block title %}  {% endblock %} </title>
+  <style>
+    .message {
+      width: 100%;
+      background-color: darkseagreen;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .text_message {
+      margin: 0;
+    }
+
+  </style>
 </head>
 <body>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="message">
+        {% for message in messages %}
+          <p class="text_message">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
   {% block content %}
   {% endblock %}
 
@@ -24,9 +46,8 @@
   </footer>
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script  type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 
 </body>
 </html>

@@ -1,0 +1,20 @@
+{% extends 'base/form.html' %}
+{% block title %}
+  Login
+{% endblock %}
+
+{% block content %}
+  {% from '_macroForm.html' import show_form %}
+  <div class="container">
+    <form class="m-5" method="POST" id='login_form'>
+      <input type="hidden" name='csrf_token' value='{{ csrf_token() }}'>
+      {{ show_form(form.email, class='form-control') }}
+      {{ show_form(form.password, class='form-control') }}
+      <br />
+      <button class="btn btn-primary form-control mb-2" type="submit">Send</button>
+      <a href="/" class="btn btn-info form-control">
+        Back
+      </a>
+    </form>
+  </div>
+{% endblock %}
