@@ -1,9 +1,10 @@
 from wtforms import Form, StringField, TextField, validators, PasswordField
 from wtforms.fields.html5 import EmailField
+from models import User
 
 def length_honeypot(form, field):
     if len(field.data) > 0:
-        raise validators.validationError('El campo debe estar vacio')
+        raise validators.ValidationError('El campo debe estar vacio')
 
 class LoginForm(Form):
     email = EmailField('Correo Electrónico',
@@ -38,3 +39,9 @@ class CreateForm(Form):
             validators.Required(message='Password Requerido')
         ]
     )
+
+    def validate_username(form, field):
+        username = field.data
+        user = User.query.filter_by(username = username).first()
+        if user is not None:
+            raise validators.ValidationError('Usuario ya registrado')
