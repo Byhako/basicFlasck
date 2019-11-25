@@ -20,6 +20,7 @@ def page_no_found(e):
 @app.before_request
 def before_request():
     g.variable_global = 'Selene'
+    print('\n --------------------------------------------- \n')
     if 'email' not in session and request.endpoint in ['comment']:
         return redirect(url_for('login'))
     
