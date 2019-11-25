@@ -23,7 +23,7 @@ def before_request():
     if 'email' not in session and request.endpoint in ['comment']:
         return redirect(url_for('login'))
     
-    elif 'email' in session and request.endpoint in ['login', 'create']
+    elif 'email' in session and request.endpoint in ['login', 'create']:
         return redirect(url_for('index'))
 
 
