@@ -17,11 +17,14 @@ def page_no_found(e):
     return render_template('app/404.html'), 404
 
 # -----------------------------------------------------------------------
-# @app.before_request
-# def before_request():
-#     g.variable_global = 'Selene'
-#     # if 'username' not in session and request.endpoint not in ['index']:
-#     #     return redirect(url_for('index'))
+@app.before_request
+def before_request():
+    g.variable_global = 'Selene'
+    if 'email' not in session and request.endpoint in ['comment']:
+        return redirect(url_for('login'))
+    
+    elif 'email' in session and request.endpoint in ['login', 'create']
+        return redirect(url_for('index'))
 
 
 @app.route('/')
@@ -51,21 +54,28 @@ def index():
 def login():
     login_form = formulario.LoginForm(request.form)
     if request.method == 'POST' and login_form.validate():
-        print('email: ', login_form.email.data)
-        print('password: ', login_form.password.data)
-        session['username'] = login_form.email.data
+        email = login_form.email.data
+        password = login_form.password.data
 
-        success_message = 'Bienvenido {}'.format(login_form.email.data)
-        print(success_message)
-        flash(success_message)
+        # select * fron users where mail='mail' limit 1
+        user = User.query.filter_by(email = email).first()
+
+        if user is not None and user.verify_password(password):
+            success_message = 'Bienvenido {}'.format(login_form.email.data)
+            flash(success_message)
+            session['email'] = email
+            return redirect(url_for('index'))
+        else:
+            error_message = 'correo o contraseña incorrecta'
+            flash(error_message)
 
     return render_template('app/login.html', form=login_form)
 
 
 @app.route('/logout')
 def logout():
-    if 'username' in session:
-        session.pop('username')
+    if 'email' in session:
+        session.pop('email')
     # Ponemos el nombre de la funcion
     return redirect(url_for('login'))
 
@@ -76,6 +86,10 @@ def cookie():
     # Nombre de la cokie, valor
     response.set_cookie('custom_cookie', 'Selene')
     return response
+
+@app.route('/comment')
+def comment():
+    return render_template('app/comment.html')
 
 
 @app.route('/ajax_login', methods = ['POST'])
