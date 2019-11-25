@@ -97,9 +97,9 @@ def create():
         print('password: ', create_form.password.data)
 
         user = User(
-            username = create_form.username.data,
-            email = create_form.email.data,
-            password = create_form.password.data
+            create_form.username.data,
+            create_form.email.data,
+            create_form.password.data
         )
 
         db.session.add(user)
@@ -116,4 +116,5 @@ if __name__ == "__main__":
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        print('db creada')
     app.run(port=5000)
