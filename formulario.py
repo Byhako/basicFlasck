@@ -21,6 +21,14 @@ class LoginForm(Form):
     )
 
 
+class CommentForm(Form):
+    comment = StringField('Comentario',
+        [
+            validators.Required(message='Comentario requerido')
+        ]
+    )
+
+
 class CreateForm(Form):
     username = TextField('Usuario',
         [

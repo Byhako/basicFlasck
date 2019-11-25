@@ -3,7 +3,7 @@ from flask_wtf.csrf import CSRFProtect
 import json
 import formulario
 from config import DevelopmentConfig
-from models import db, User
+from models import db, User, Comment
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -30,16 +30,19 @@ def before_request():
 @app.route('/')
 def index():
     # print('index', g.variable_global)
-
+    login = 'false'
     # Obtengo la cokie
     custom_cookie = request.cookies.get('custom_cookie', 'No encontrada')
     print('custom_cookie', custom_cookie)
 
     # Leo sesiones
-    if 'username' in session:
-        username = session['username']
-        print('username', username)
-    return render_template('app/index.html')
+    if 'email' in session:
+        email = session['email']
+        login = 'true'
+        user = User.query.filter_by(email = email).first()
+        session['user_id'] = user.id
+
+    return render_template('app/index.html', login=login)
 
 
 # @app.after_request
@@ -76,6 +79,7 @@ def login():
 def logout():
     if 'email' in session:
         session.pop('email')
+        session.pop('user_id')
     # Ponemos el nombre de la funcion
     return redirect(url_for('login'))
 
@@ -87,9 +91,23 @@ def cookie():
     response.set_cookie('custom_cookie', 'Selene')
     return response
 
-@app.route('/comment')
+@app.route('/comment', methods=['GET', 'POST'])
 def comment():
-    return render_template('app/comment.html')
+    comment_form = formulario.CommentForm(request.form)
+    if request.method == 'POST' and comment_form.validate():
+        user_id = session['user_id']
+        comment = Comment(
+            user_id = user_id,
+            text = comment_form.comment.data
+            )
+        
+        db.session.add(comment)
+        db.session.commit()
+
+        success_message = 'Comentario creado con exito'
+        flash(success_message)
+
+    return render_template('app/comment.html', form=comment_form)
 
 
 @app.route('/ajax_login', methods = ['POST'])

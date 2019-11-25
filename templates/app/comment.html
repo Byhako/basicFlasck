@@ -1,56 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Inicio</title>
-  <style>
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    .box {
-      width: 400px;
-      height: 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: none;
-      background-color: #007bff;
-      margin-bottom: 40px;
-    }
-    h1 {
-      color:whitesmoke;
-    }
-    .contentBtn {
-      width: 400px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    a {
-      text-decoration: none;
-    }
-    .textBtn {
-      width: 100px;
-      height: 40px;
-      background-color: #17a2b8;
-      color: whitesmoke;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-    }
-  </style>
-</head>
-<body>
+{% extends 'base/form.html' %}
+
+{% block content %}
+  {% from '_macroForm.html' import show_form %}
   <div class="container">
-    <div class="box">
-      <h1>Comentarios</h1>
-    </div>
+    <form class="m-5" method="POST" id='comment_form'>
+      <input type="hidden" name='csrf_token' value='{{ csrf_token() }}'>
+      {{ show_form(form.comment, class='form-control') }}
+      <br />
+      <button class="btn btn-primary form-control mb-2" type="submit">Enviar</button>
+      <a href="/" class="btn btn-info form-control">
+        Regresar
+      </a>
+    </form>
   </div>
-</body>
-</html>
+{% endblock %}
