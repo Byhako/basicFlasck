@@ -5,6 +5,8 @@ import formulario
 from config import DevelopmentConfig
 from models import db, User, Comment
 
+from helper import date_format
+
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 # app.secret_key = 'my_secret_key'
@@ -119,12 +121,22 @@ def review(page=1):
     if page == 1:
         ant = 1
 
-    comments_list = Comment.query.join(User).add_columns(User.username, Comment.text).paginate(
-        page, per_page, False)
+    comments_list = Comment.query.join(User).add_columns(
+        User.username,
+        Comment.text,
+        Comment.create_date
+        ).paginate(page, per_page, False)
         # en que pagina, numero de items por pagina
     if len(comments_list.items) < 3:
         sig = page
-    return render_template('app/review.html', comments=comments_list, ant=ant, sig=sig)
+    return render_template(
+        'app/review.html',
+        comments=comments_list,
+        page=page,
+        ant=ant,
+        sig=sig,
+        date_format=date_format
+    )
 
 @app.route('/ajax_login', methods = ['POST'])
 def ajax_login():

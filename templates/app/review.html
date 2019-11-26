@@ -46,6 +46,10 @@
     a:hover {
       text-decoration: none;
     }
+    .date {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -58,6 +62,7 @@
       {% for comment in comments.items %}
         <div class="row">
           <p class="user">{{ comment.username }}</p>
+          <i class="date">{{ date_format(comment.create_date) }}</i>
           <p class="comment">{{ comment.text }}</p>
         </div>
       {% endfor %}
