@@ -4,9 +4,11 @@ from flask_mail import Mail, Message
 
 import json
 import formulario
+import threading
+from flask import copy_current_request_context
+
 from config import DevelopmentConfig
 from models import db, User, Comment
-
 from helper import date_format
 
 app = Flask(__name__)
@@ -15,6 +17,16 @@ app.config.from_object(DevelopmentConfig)
 # csrf = CSRFProtect(app)
 csrf = CSRFProtect()
 mail = Mail()
+
+def send_mail(user_email, user):
+    msg = Message(
+        'Asunto mensaje',
+        sender=app.config['MAIL_USERNAME'],
+        recipients=[user_email]
+    )
+    msg.html = render_template('app/email.html', user=user)
+    mail.send(msg)
+
 
 @app.errorhandler(404)
 def page_no_found(e):
@@ -163,13 +175,19 @@ def create():
         db.session.add(user)
         db.session.commit()
 
-        # msg = Message(
-        #     'Asunto mensaje',
-        #     sender=app.config['MAIL_USERNAME'],
-        #     recipients=[user.email]
+        # ---------------------------------------------
+        # @copy_current_request_context
+        # def send_message(email, user):
+        #     send_mail(email, user)
+
+        # # Creamos hilo para enviar correo
+        # sender = threading.Thread(
+        #     name='mail_sender',
+        #     target=send_message,
+        #     args=(user.email, user.username)
         # )
-        # msg.html = render_template('app/email.html', user=user.username)
-        # mail.send(msg)
+        # sender.start()
+        # ---------------------------------------------
 
         success_message = 'Usuario {} creado con exito'.format(create_form.username.data)
         flash(success_message)
