@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, make_response, session, redirect, url_for, flash, g
 from flask_wtf.csrf import CSRFProtect
+from flask_mail import Mail, Message
+
 import json
 import formulario
 from config import DevelopmentConfig
@@ -12,7 +14,7 @@ app.config.from_object(DevelopmentConfig)
 # app.secret_key = 'my_secret_key'
 # csrf = CSRFProtect(app)
 csrf = CSRFProtect()
-
+mail = Mail()
 
 @app.errorhandler(404)
 def page_no_found(e):
@@ -152,10 +154,6 @@ def ajax_login():
 def create():
     create_form = formulario.CreateForm(request.form)
     if request.method == 'POST' and create_form.validate():
-        print('username: ', create_form.username.data)
-        print('email: ', create_form.email.data)
-        print('password: ', create_form.password.data)
-
         user = User(
             create_form.username.data,
             create_form.email.data,
@@ -164,6 +162,14 @@ def create():
 
         db.session.add(user)
         db.session.commit()
+
+        # msg = Message(
+        #     'Asunto mensaje',
+        #     sender=app.config['MAIL_USERNAME'],
+        #     recipients=[user.email]
+        # )
+        # msg.html = render_template('app/email.html', user=user.username)
+        # mail.send(msg)
 
         success_message = 'Usuario {} creado con exito'.format(create_form.username.data)
         flash(success_message)
@@ -174,7 +180,11 @@ def create():
 if __name__ == "__main__":
     csrf.init_app(app)
     db.init_app(app)
+    mail.init_app(app)
     with app.app_context():
         db.create_all()
         print('db creada')
     app.run(port=5000)
+
+# https://support.google.com/accounts/answer/6010255?hl=en
+# Turn off "Less secure app access"
