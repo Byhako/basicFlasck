@@ -21,8 +21,8 @@ def page_no_found(e):
 def before_request():
     g.variable_global = 'Selene'
     print('\n --------------------------------------------- \n')
-    if 'email' not in session and request.endpoint in ['comment']:
-        return redirect(url_for('login'))
+    if 'email' not in session and request.endpoint in ['comment', 'review']:
+        return redirect(url_for('/'))
     
     elif 'email' in session and request.endpoint in ['login', 'create']:
         return redirect(url_for('index'))
@@ -110,6 +110,21 @@ def comment():
 
     return render_template('app/comment.html', form=comment_form)
 
+@app.route('/review')
+@app.route('/review/<int:page>')
+def review(page=1):
+    per_page = 3
+    ant = page - 1
+    sig = page + 1
+    if page == 1:
+        ant = 1
+
+    comments_list = Comment.query.join(User).add_columns(User.username, Comment.text).paginate(
+        page, per_page, False)
+        # en que pagina, numero de items por pagina
+    if len(comments_list.items) < 3:
+        sig = page
+    return render_template('app/review.html', comments=comments_list, ant=ant, sig=sig)
 
 @app.route('/ajax_login', methods = ['POST'])
 def ajax_login():
